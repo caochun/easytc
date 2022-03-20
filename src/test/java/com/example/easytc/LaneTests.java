@@ -13,25 +13,22 @@ public class LaneTests {
 
     @Test
     public void testForwardToYellow_whenNullOBU_throwsInvalidOBUException() {
-
         Lane lane = new Lane();
         OBU obu = null;
         assertThrows(InvalidOBUException.class, () -> {
             lane.forwardToYellow(obu);
         });
-
     }
 
     @Test
     public void testForwardToYellow_whenYellowAreaNotEmpty_throwsYellowCollisionException() {
-
         Lane lane = new Lane();
-        OBU obu = new OBU();
-        Assertions.assertDoesNotThrow(()->{
+        OBU obu = OBU.getRandomOBU();
+        Assertions.assertDoesNotThrow(() -> {
             lane.forwardToYellow(obu);
         });
 
-        OBU anotherObu = new OBU();
+        OBU anotherObu = OBU.getRandomOBU();
 
         assertThrows(YellowCollisionException.class, () -> {
             lane.forwardToYellow(anotherObu);
