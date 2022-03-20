@@ -1,8 +1,14 @@
 package com.example.easytc.domain;
 
+import java.time.Instant;
 import java.util.Random;
+import java.util.UUID;
 
-public class OBU {
+public class Vehicle {
+
+    public static enum Status {
+        UNKNOWN, CHARGED, CHARGING, UNCHARGED
+    }
 
 
     private static final String PLATE_UNRECOGNIZED = "中OPLATE";
@@ -33,16 +39,43 @@ public class OBU {
         return vid;
     }
 
-    private String plate;
+    private String plate = null;
+    private String obu = null;
+    private String color = "W";
+    private Status states = Status.UNKNOWN;
+    private Instant mtime = Instant.now();
 
-    public OBU(String plate) {
+    public Vehicle(String plate, String obu) {
         this.plate = plate;
+        this.obu = obu;
     }
 
-    public static final OBU UNRECOGNIZED = new OBU(PLATE_UNRECOGNIZED);
+    public boolean noOBU() {
+        return (obu == null);
+    }
 
-    public static OBU getRandomOBU() {
-        return new OBU(randomVehicleId());
+
+    public Instant getLastUpdate() {
+        return this.mtime;
+    }
+
+    public void update() {
+        this.mtime = Instant.now();
+    }
+
+    public void setStatus(Status states) {
+        this.states = states;
+        this.update();
+    }
+
+    public static Vehicle noOBUVehicle() {
+        Vehicle vehicle = new Vehicle(PLATE_UNRECOGNIZED, null);
+        vehicle.setStatus(Status.UNCHARGED);
+        return vehicle;
+    }
+
+    public static Vehicle randomVehicle() {
+        return new Vehicle(randomVehicleId(), UUID.randomUUID().toString());
     }
 
 }

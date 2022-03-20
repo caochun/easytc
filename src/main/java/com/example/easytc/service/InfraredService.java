@@ -13,7 +13,7 @@ public class InfraredService {
         this.laneService = laneService;
     }
 
-    public void onTriggered(boolean forward) {
+    public void trigger(boolean forward) {
         if (forward)
             this.laneService.onForwardInfraredTriggered();
         else

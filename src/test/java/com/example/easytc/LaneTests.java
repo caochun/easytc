@@ -1,9 +1,9 @@
 package com.example.easytc;
 
 import com.example.easytc.domain.Lane;
-import com.example.easytc.domain.OBU;
-import com.example.easytc.exception.InvalidOBUException;
-import com.example.easytc.exception.YellowCollisionException;
+import com.example.easytc.domain.Vehicle;
+import com.example.easytc.exception.InvalidVehicleException;
+import com.example.easytc.exception.VehicleCollisionInYellowException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -14,24 +14,24 @@ public class LaneTests {
     @Test
     public void testForwardToYellow_whenNullOBU_throwsInvalidOBUException() {
         Lane lane = new Lane();
-        OBU obu = null;
-        assertThrows(InvalidOBUException.class, () -> {
-            lane.forwardToYellow(obu);
+        Vehicle vehicle = null;
+        assertThrows(InvalidVehicleException.class, () -> {
+            lane.forwardToYellow(vehicle);
         });
     }
 
     @Test
     public void testForwardToYellow_whenYellowAreaNotEmpty_throwsYellowCollisionException() {
         Lane lane = new Lane();
-        OBU obu = OBU.getRandomOBU();
+        Vehicle vehicle = Vehicle.randomVehicle();
         Assertions.assertDoesNotThrow(() -> {
-            lane.forwardToYellow(obu);
+            lane.forwardToYellow(vehicle);
         });
 
-        OBU anotherObu = OBU.getRandomOBU();
+        Vehicle anotherVehicle = Vehicle.randomVehicle();
 
-        assertThrows(YellowCollisionException.class, () -> {
-            lane.forwardToYellow(anotherObu);
+        assertThrows(VehicleCollisionInYellowException.class, () -> {
+            lane.forwardToYellow(anotherVehicle);
         });
 
     }

@@ -1,9 +1,9 @@
 package com.example.easytc.domain;
 
-import com.example.easytc.exception.GreenEmptyExcpetion;
-import com.example.easytc.exception.InvalidOBUException;
-import com.example.easytc.exception.YellowCollisionException;
-import com.example.easytc.exception.YellowEmptyException;
+import com.example.easytc.exception.InvalidVehicleException;
+import com.example.easytc.exception.NoVehicleInGreenException;
+import com.example.easytc.exception.NoVehicleInYellowException;
+import com.example.easytc.exception.VehicleCollisionInYellowException;
 
 import java.util.ArrayDeque;
 import java.util.Optional;
@@ -17,30 +17,37 @@ public class Lane {
         return id;
     }
 
-    private Optional<OBU> yellowArea = Optional.empty();
-    private final ArrayDeque<OBU> greenArea = new ArrayDeque<>();
+    private Optional<Vehicle> yellowArea = Optional.empty();
+    private final ArrayDeque<Vehicle> greenArea = new ArrayDeque<>();
 
-    public void forwardToYellow(OBU obu) throws YellowCollisionException, InvalidOBUException {
-        if (obu == null) throw new InvalidOBUException();
+    public void forwardToYellow(Vehicle vehicle) throws VehicleCollisionInYellowException, InvalidVehicleException {
+        if (vehicle == null) throw new InvalidVehicleException();
         if (yellowArea.isPresent())
-            throw new YellowCollisionException();
-        yellowArea = Optional.of(obu);
+            throw new VehicleCollisionInYellowException();
+        yellowArea = Optional.of(vehicle);
     }
 
-    public void yellowForwardToGreen() throws YellowEmptyException {
-        if (yellowArea.isEmpty()) throw new YellowEmptyException();
-        greenArea.offer(yellowArea.get());
-        yellowArea = Optional.empty();
+    public void yellowForwardToGreen() throws NoVehicleInYellowException {
+        if (yellowArea.isEmpty()) {
+            greenArea.offer(Vehicle.noOBUVehicle());
+        } else {
+            greenArea.offer(yellowArea.get());
+            yellowArea = Optional.empty();
+        }
     }
 
-    public void greenBackToYellow() throws YellowCollisionException, GreenEmptyExcpetion {
-        if (greenArea.isEmpty()) throw new GreenEmptyExcpetion();
-        if (yellowArea.isPresent()) throw new YellowCollisionException();
-        yellowArea = Optional.of(greenArea.pollLast());
+    public void greenBackToYellow() throws VehicleCollisionInYellowException, NoVehicleInGreenException {
+        if (greenArea.isEmpty()) throw new NoVehicleInGreenException();
+        if (yellowArea.isPresent()) throw new VehicleCollisionInYellowException();
+
+        Vehicle vehicle = greenArea.pollLast();
+        if (!vehicle.noOBU()){
+            yellowArea = Optional.of(greenArea.pollLast());
+        }
     }
 
-    public OBU leaveGreen() throws GreenEmptyExcpetion {
-        if (greenArea.isEmpty()) throw new GreenEmptyExcpetion();
+    public Vehicle leaveGreen() throws NoVehicleInGreenException {
+        if (greenArea.isEmpty()) throw new NoVehicleInGreenException();
         return greenArea.pollFirst();
     }
 }

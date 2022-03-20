@@ -12,7 +12,7 @@ public class CoilService {
         this.laneService = laneService;
     }
 
-    public void onTriggered() {
+    public void trigger() {
         this.laneService.onCoilTriggered();
     }
 }
