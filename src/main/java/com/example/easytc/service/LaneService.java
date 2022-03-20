@@ -6,6 +6,7 @@ import com.example.easytc.exception.InvalidVehicleException;
 import com.example.easytc.exception.NoVehicleInGreenException;
 import com.example.easytc.exception.NoVehicleInYellowException;
 import com.example.easytc.exception.VehicleCollisionInYellowException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -15,6 +16,13 @@ public class LaneService {
 
     public LaneService() {
         this.lane = new Lane();
+    }
+
+    private LeverService leverService;
+
+    @Autowired
+    public void setLeverService(LeverService leverService) {
+        this.leverService = leverService;
     }
 
     public void onDetected(Vehicle vehicle) {
@@ -30,6 +38,8 @@ public class LaneService {
     public void onForwardInfraredTriggered() {
         try {
             this.lane.yellowForwardToGreen();
+            if (!this.lane.noChargedVehicleAtFirst())
+                this.leverService.open();
         } catch (NoVehicleInYellowException e) {
             e.printStackTrace();
         }
@@ -48,6 +58,8 @@ public class LaneService {
     public void onCoilTriggered() {
         try {
             this.lane.leaveGreen();
+            if (this.lane.noChargedVehicleAtFirst())
+                this.leverService.close();
         } catch (NoVehicleInGreenException e) {
             e.printStackTrace();
         }

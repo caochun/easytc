@@ -41,7 +41,7 @@ public class Lane {
         if (yellowArea.isPresent()) throw new VehicleCollisionInYellowException();
 
         Vehicle vehicle = greenArea.pollLast();
-        if (!vehicle.noOBU()){
+        if (!vehicle.noOBU()) {
             yellowArea = Optional.of(greenArea.pollLast());
         }
     }
@@ -49,5 +49,10 @@ public class Lane {
     public Vehicle leaveGreen() throws NoVehicleInGreenException {
         if (greenArea.isEmpty()) throw new NoVehicleInGreenException();
         return greenArea.pollFirst();
+    }
+
+
+    public boolean noChargedVehicleAtFirst() {
+        return ((this.greenArea.isEmpty()) || (this.greenArea.peekFirst().noOBU()));
     }
 }
