@@ -1,7 +1,7 @@
 package com.example.easytc;
 
-import com.example.easytc.core.Lane;
-import com.example.easytc.core.OBU;
+import com.example.easytc.domain.Lane;
+import com.example.easytc.domain.OBU;
 import com.example.easytc.exception.InvalidOBUException;
 import com.example.easytc.exception.YellowCollisionException;
 import org.junit.jupiter.api.Assertions;
